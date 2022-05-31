@@ -25,7 +25,8 @@ import CoreFoundation
 
 public class PixelStrip {
   private var ledStrip: ws2811_t
-  private var channelKeypath: WritableKeyPath<ws2811_t, ws2811_channel_t>
+  private typealias ChannelKeyPath = WritableKeyPath<(ws2811_channel_t, ws2811_channel_t), ws2811_channel_t>
+  private var channel: ChannelKeyPath
 
   public init(numLEDs: Int32, pin: Int32, stripType: WSKind = .WS2811, dma: Int32 = 10, invert: Bool = false,
               brightness: UInt8 = 255, channel: UInt8 = 0, gamma: UInt8 = 0) {
@@ -34,24 +35,23 @@ public class PixelStrip {
     self.ledStrip = ws2811_t()
 
     // Initialize the channels to zero
-    let channelKPs: [WritableKeyPath<ws2811_t, ws2811_channel_t>] = [\.channel.0, \.channel.1]
+    let channelKPs: [ChannelKeyPath] = [\.0, \.1]
     for kp in channelKPs {
-      ledStrip[keyPath: kp].count = 0
-      ledStrip[keyPath: kp].gpionum = 0
-      ledStrip[keyPath: kp].invert = 0
-      ledStrip[keyPath: kp].brightness = 0
+      ledStrip.channel[keyPath: kp].count = 0
+      ledStrip.channel[keyPath: kp].gpionum = 0
+      ledStrip.channel[keyPath: kp].invert = 0
+      ledStrip.channel[keyPath: kp].brightness = 0
     }
 
     // initialize channel in use
-    self.channelKeypath = channel == 0 ? \.channel.0 : \.channel.1
-
-    ledStrip[keyPath: channelKeypath].gamma = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
-    ledStrip[keyPath: channelKeypath].gamma.pointee = gamma
-    ledStrip[keyPath: channelKeypath].count = numLEDs
-    ledStrip[keyPath: channelKeypath].gpionum = pin
-    ledStrip[keyPath: channelKeypath].invert = invert ? 1 : 0
-    ledStrip[keyPath: channelKeypath].brightness = brightness
-    ledStrip[keyPath: channelKeypath].strip_type = stripType.cStriptype
+    self.channel = channel == 0 ? \.0 : \.1
+    ledStrip.channel[keyPath: self.channel].gamma = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
+    ledStrip.channel[keyPath: self.channel].gamma.pointee = gamma
+    ledStrip.channel[keyPath: self.channel].count = numLEDs
+    ledStrip.channel[keyPath: self.channel].gpionum = pin
+    ledStrip.channel[keyPath: self.channel].invert = invert ? 1 : 0
+    ledStrip.channel[keyPath: self.channel].brightness = brightness
+    ledStrip.channel[keyPath: self.channel].strip_type = stripType.cStriptype
 
     // initialize the controller
     ledStrip.freq = stripType.getDuty().frequency
@@ -80,12 +80,12 @@ public class PixelStrip {
   }
 
   public func setPixelColor(pos: Int, color: Color) {
-    ledStrip[keyPath: channelKeypath][pos] = ws2811_led_t(color: color)
+    ledStrip.channel[keyPath: self.channel][pos] = ws2811_led_t(color: color)
   }
 
   public var brightness: UInt8 {
-    get { ledStrip[keyPath: channelKeypath].brightness }
-    set { ledStrip[keyPath: channelKeypath].brightness = newValue }
+    get { ledStrip.channel[keyPath: self.channel].brightness }
+    set { ledStrip.channel[keyPath: self.channel].brightness = newValue }
   }
 }
 
