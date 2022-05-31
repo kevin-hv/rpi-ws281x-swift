@@ -46,13 +46,13 @@ public class PixelStrip {
 
     // initialize channel in use
     self.channel = channel == 0 ? ledStrip.channel.0 : ledStrip.channel.1
-    self.channel.gamma = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
-    self.channel.gamma.pointee = gamma
-    self.channel.count = numLEDs
-    self.channel.gpionum = pin
-    self.channel.invert = invert ? 1 : 0
-    self.channel.brightness = brightness
-    self.channel.strip_type = stripType.cStriptype
+    ledStrip.channel.0 .gamma = UnsafeMutablePointer<UInt8>.allocate(capacity: 1)
+    ledStrip.channel.0 .gamma.pointee = gamma
+    ledStrip.channel.0 .count = numLEDs
+    ledStrip.channel.0 .gpionum = pin
+    ledStrip.channel.0 .invert = invert ? 1 : 0
+    ledStrip.channel.0 .brightness = brightness
+    ledStrip.channel.0 .strip_type = stripType.cStriptype
 
     // initialize the controller
     ledStrip.freq = stripType.getDuty().frequency
@@ -81,18 +81,24 @@ public class PixelStrip {
   }
 
   public func setPixelColor(pos: Int, color: Color) {
-    channel[pos] = ws2811_led_t(color: color)
+    ledStrip.channel.0 [pos] = ws2811_led_t(color: color)
   }
 
   public var brightness: UInt8 {
-    get { channel.brightness }
-    set { channel.brightness = newValue }
+    get { ledStrip.channel.0 .brightness }
+    set { ledStrip.channel.0 .brightness = newValue }
   }
 }
 
 public struct Color {
   public var red, green, blue: UInt8
   public var white: UInt8 = 0
+
+  public static var black = Color(red: 0, green: 0, blue: 0)
+  public static var white = Color(red: 255, green: 255, blue: 255)
+  public static var red = Color(red: 255, green: 0, blue: 0)
+  public static var green = Color(red: 0, green: 255, blue: 0)
+  public static var blue = Color(red: 0, green: 0, blue: 255)
 }
 
 private extension ws2811_led_t {
@@ -159,4 +165,3 @@ public enum WSKind{
     }
   }
 }
-
