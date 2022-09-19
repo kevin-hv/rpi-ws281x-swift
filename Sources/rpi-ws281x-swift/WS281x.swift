@@ -132,14 +132,14 @@ extension ws2811_channel_t {
 
 
 // From uraimo/WS281x.swift
-public enum WSKind{
-  case WS2811       //T0H:0.5us T0L:2.0us, T1H:1.2us T1L:1.3us , resDelay > 50us
-  case WS2812       //T0H:0.35us T0L:0.8us, T1H:0.7us T1L:0.6us , resDelay > 50us
-  case WS2812B      //T0H:0.35us T0L:0.9us, T1H:0.9us T1L:0.35us , resDelay > 50us
-  case WS2812B2017  //T0H:0.35us T0L:0.9us, T1H:0.9us T1L:0.35us , resDelay > 300us 2017 revision of WS2812B
-  case WS2812S      //T0H:0.4us T0L:0.84us, T1H:0.85us T1L:0.4us , resDelay > 50us
-  case WS2813       //T0H:0.35us T0L:0.9us, T1H:0.9us T1L:0.35us , resDelay > 250us ?
-  case WS2813B      //T0H:0.25us T0L:0.6us, T1H:0.6us T1L:0.25us , resDelay > 280us ?
+public enum WSKind {
+  case WS2811       //T0H:0.5us  T0L:2.0us,  T1H:1.2us  T1L:1.3us ,  resDelay > 50us
+  case WS2812       //T0H:0.35us T0L:0.8us,  T1H:0.7us  T1L:0.6us ,  resDelay > 50us
+  case WS2812B      //T0H:0.35us T0L:0.9us,  T1H:0.9us  T1L:0.35us , resDelay > 50us
+  case WS2812B2017  //T0H:0.35us T0L:0.9us,  T1H:0.9us  T1L:0.35us , resDelay > 300us 2017 revision of WS2812B
+  case WS2812S      //T0H:0.4us  T0L:0.84us, T1H:0.85us T1L:0.4us ,  resDelay > 50us
+  case WS2813       //T0H:0.35us T0L:0.9us,  T1H:0.9us  T1L:0.35us , resDelay > 250us ?
+  case WS2813B      //T0H:0.25us T0L:0.6us,  T1H:0.6us  T1L:0.25us , resDelay > 280us ?
 
   fileprivate var cStriptype: Int32 {
     // FIXME:
@@ -147,20 +147,13 @@ public enum WSKind{
   }
   public func getDuty() -> (zero: Int, one: Int, frequency: UInt32, resetDelay: Int){
     switch self{
-    case WSKind.WS2811:
-      return (33,66,800_000,55)
-    case WSKind.WS2812:
-      return (33,66,800_000,55)
-    case WSKind.WS2812B:
-      return (33,66,800_000,55)
-    case WSKind.WS2812B2017:
-      return (33,66,800_000,300)
-    case WSKind.WS2812S:
-      return (33,66,800_000,55)
-    case WSKind.WS2813:
-      return (33,66,800_000,255)
-    case WSKind.WS2813B:
-      return (30,70,800_000,280)
+    case .WS2811:      return (33,66,800_000,55)
+    case .WS2812:      return (33,66,800_000,55)
+    case .WS2812B:     return (33,66,800_000,55)
+    case .WS2812B2017: return (33,66,800_000,300)
+    case .WS2812S:     return (33,66,800_000,55)
+    case .WS2813:      return (33,66,800_000,255)
+    case .WS2813B:     return (30,70,800_000,280)
     }
   }
 }
