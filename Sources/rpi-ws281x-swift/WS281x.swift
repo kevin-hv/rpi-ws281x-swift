@@ -93,6 +93,12 @@ public struct Color {
   public var red, green, blue: UInt8
   public var white: UInt8 = 0
 
+  public init(red: UInt8, green: UInt8, blue: UInt8){
+    self.red = red
+    self.green = green
+    self.blue = blue
+  }
+
   public static var black = Color(red: 0, green: 0, blue: 0)
   public static var white = Color(red: 255, green: 255, blue: 255)
   public static var red = Color(red: 255, green: 0, blue: 0)
