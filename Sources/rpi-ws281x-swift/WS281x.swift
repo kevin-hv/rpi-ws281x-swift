@@ -97,6 +97,7 @@ public struct Color {
     self.red = red
     self.green = green
     self.blue = blue
+    self.white = 0
   }
 
   public static var black = Color(red: 0, green: 0, blue: 0)
