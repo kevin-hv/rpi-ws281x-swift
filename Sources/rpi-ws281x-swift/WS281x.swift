@@ -20,8 +20,10 @@
  SOFTWARE.)
  */
 
-import rpi_ws281x
 import CoreFoundation
+
+#if os(Linux)
+import rpi_ws281x
 
 public class PixelStrip {
   private var ledStrip: ws2811_t
@@ -89,31 +91,6 @@ public class PixelStrip {
   }
 }
 
-public struct Color {
-  public var red, green, blue: UInt8
-  public var white: UInt8 = 0
-
-  public init(red: UInt8, green: UInt8, blue: UInt8){
-    self.red = red
-    self.green = green
-    self.blue = blue
-    self.white = 0
-  }
-
- public init(red: UInt8, green: UInt8, blue: UInt8, white: UInt8){
-    self.red = red
-    self.green = green
-    self.blue = blue
-    self.white = white
-  }
-
-  public static var black = Color(red: 0, green: 0, blue: 0)
-  public static var white = Color(red: 255, green: 255, blue: 255)
-  public static var red = Color(red: 255, green: 0, blue: 0)
-  public static var green = Color(red: 0, green: 255, blue: 0)
-  public static var blue = Color(red: 0, green: 0, blue: 255)
-}
-
 private extension ws2811_led_t {
   init(color: Color) {
     self = 0
@@ -144,6 +121,49 @@ extension ws2811_channel_t {
   }
 }
 
+extension WSKind {
+    fileprivate var cStriptype: Int32 {
+    // FIXME:
+        return WS2811_STRIP_GRB
+    }
+}
+#else
+
+public class PixelStrip {
+    public init(numLEDs: Int32, pin: Int32, stripType: WSKind = .WS2811, dma: Int32 = 10, invert: Bool = false,
+                brightness: UInt8 = 255, channel: UInt8 = 0, gamma: UInt8 = 0) {}
+}
+
+#endif
+
+
+public struct Color {
+  public var red, green, blue: UInt8
+  public var white: UInt8 = 0
+
+  public init(red: UInt8, green: UInt8, blue: UInt8){
+    self.red = red
+    self.green = green
+    self.blue = blue
+    self.white = 0
+  }
+
+ public init(red: UInt8, green: UInt8, blue: UInt8, white: UInt8){
+    self.red = red
+    self.green = green
+    self.blue = blue
+    self.white = white
+  }
+
+  public static var black = Color(red: 0, green: 0, blue: 0)
+  public static var white = Color(red: 255, green: 255, blue: 255)
+  public static var red = Color(red: 255, green: 0, blue: 0)
+  public static var green = Color(red: 0, green: 255, blue: 0)
+  public static var blue = Color(red: 0, green: 0, blue: 255)
+}
+
+
+
 
 // From uraimo/WS281x.swift
 public enum WSKind {
@@ -155,10 +175,6 @@ public enum WSKind {
   case WS2813       //T0H:0.35us T0L:0.9us,  T1H:0.9us  T1L:0.35us , resDelay > 250us ?
   case WS2813B      //T0H:0.25us T0L:0.6us,  T1H:0.6us  T1L:0.25us , resDelay > 280us ?
 
-  fileprivate var cStriptype: Int32 {
-    // FIXME:
-    return WS2811_STRIP_GRB
-  }
   public func getDuty() -> (zero: Int, one: Int, frequency: UInt32, resetDelay: Int){
     switch self{
     case .WS2811:      return (33,66,800_000,55)
