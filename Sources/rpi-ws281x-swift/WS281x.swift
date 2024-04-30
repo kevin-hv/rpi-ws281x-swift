@@ -132,6 +132,14 @@ extension WSKind {
 public class PixelStrip {
     public init(numLEDs: Int32, pin: Int32, stripType: WSKind = .WS2811, dma: Int32 = 10, invert: Bool = false,
                 brightness: UInt8 = 255, channel: UInt8 = 0, gamma: UInt8 = 0) {}
+    
+    public func begin() {
+    }
+
+    public func show() {
+    }
+
+    public func setPixelColor(pos: Int, color: Color) {}
 }
 
 #endif
